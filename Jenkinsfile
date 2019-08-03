@@ -7,9 +7,10 @@ node {
 
     if (env.BRANCH_NAME == "dev") {
       stage('Cleaning ENV') {
-          bat "IF EXIST Publish RMDIR /S /Q Publish"
-          bat "IF EXIST obj RMDIR /S /Q obj"
-          bat "IF EXIST bin RMDIR /S /Q bin"
+          // bat "IF EXIST Publish RMDIR /S /Q Publish"
+          // bat "IF EXIST obj RMDIR /S /Q obj"
+          // bat "IF EXIST bin RMDIR /S /Q bin"
+          sh echo "hello world"
           // deleteDir()
           dir("${workspace}@tmp") {
                 deleteDir()
@@ -21,30 +22,31 @@ node {
       }
       stage('DEV: Restore Packages') {
           /* This restoring of the packages of the application. */
-          bat "dotnet restore netcore-api.sln"
+          sh "dotnet restore netcore-api.sln"
       }
       stage('DEV: Clean') {
           /* This clean the solution. */
-          bat "dotnet clean"
+          sh "dotnet clean"
 
       }
       stage('DEV: Build') {
           /* This builds the solution */
           // bat "dotnet publish netcore-api.sln -o Publish -c Release -r win10-x86"
-          bat "dotnet build --configuration Release -o Publish"
+          sh "dotnet build --configuration Release -o Publish"
 
       }
       stage('DEV: Pack') {
           /* This will create zip */
           zip zipFile: "${PACKAGE_NAME}.zip", archive: false, dir: 'Publish'
-          bat "dir"
+          // bat "dir"
+          sh "ls" 
 
       }
     }
 
 
     stage('Test') {
-         bat "echo 'test passed'"
+        sh "echo 'test passed'"
     }
 
 
@@ -73,5 +75,4 @@ node {
       }
 
     }
-
 }
